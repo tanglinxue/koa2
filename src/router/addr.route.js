@@ -1,0 +1,45 @@
+// 导入koa-router
+const Router = require('koa-router');
+// 中间件
+const { auth } = require('../middleware/auth.middleware');
+const { validator } = require('../middleware/addr.middleware');
+const { create, findAll, update, remove, setDefault } = require('../controller/addr.controller');
+
+// 实例化router对象
+const router = new Router({ prefix: '/address' });
+
+router.post(
+  '/',
+  auth,
+  validator({
+    consignee: 'string',
+    phone: { type: 'string', format: /^1\d{10}$/ },
+    address: 'string',
+  }),
+  create
+);
+router.get(
+  '/',
+  auth,
+  findAll
+)
+router.put(
+  '/:id',
+  auth,
+  validator({
+    consignee: 'string',
+    phone: { type: 'string', format: /^1\d{10}$/ },
+    address: 'string',
+  }),
+  update
+)
+
+router.delete('/:id', auth, remove)
+
+
+router.patch(
+  '/:id',
+  auth,
+  setDefault
+)
+module.exports = router;
